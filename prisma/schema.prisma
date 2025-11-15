@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Direccion {
+  ID_Direccion                                    Int       @id
+  ID_USUARIO                                      String    @db.Uuid
+  Calle_                                          String?   @map("Calle ") @db.VarChar(40)
+  Ciudad                                          String?   @db.VarChar(40)
+  State_departamento_                             String?   @map("State(departamento)") @db.VarChar(30)
+  Codigo_Postal                                   String?   @db.VarChar(20)
+  Pais                                            String?   @db.VarChar(60)
+  Creado_en                                       DateTime? @db.Timestamptz(6)
+  USUARIO                                         USUARIO   @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
+  Paquete_Paquete_ID_Direccion_DestinoToDireccion Paquete[] @relation("Paquete_ID_Direccion_DestinoToDireccion")
+  Paquete_Paquete_ID_Direccion_OrigenToDireccion  Paquete[] @relation("Paquete_ID_Direccion_OrigenToDireccion")
+}
+
+model Estados {
+  ID_Estado                Int                        @id(map: "estado_pkey")
+  n_Estado                 String?                    @db.VarChar(60)
+  Descripcion              String?
+  Historial_Estado_Paquete Historial_Estado_Paquete[]
+  Paquete                  Paquete[]
+}
+
+model Historial_Estado_Paquete {
+  ID_Historial Int       @id(map: "Historial_pkey")
+  ID_Paquete   Int
+  ID_Estado    Int
+  Ubicacion    String?   @db.VarChar(50)
+  Fecha_evento DateTime? @db.Timestamptz(6)
+  Estados      Estados   @relation(fields: [ID_Estado], references: [ID_Estado], onDelete: NoAction, onUpdate: NoAction, map: "ID_Estado")
+  Paquete      Paquete   @relation(fields: [ID_Paquete], references: [ID_Paquete], onDelete: NoAction, onUpdate: NoAction, map: "ID_Paquete")
+}
+
+model Mensajero {
+  ID_Mensajero  String      @id(map: "mensajeros_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  Pnomb         String      @db.VarChar(30)
+  Snomb         String      @db.VarChar(30)
+  Papellido     String      @db.VarChar(30)
+  Sapellido     String      @db.VarChar(30)
+  Info_Contacto String?     @db.VarChar(30)
+  URL_GPS       String?     @db.VarChar(50)
+  Email         String      @db.VarChar(60)
+  Paquete_m     Paquete_m[]
+}
+
+model Pagos {
+  ID_Pago     Int       @id(map: "Pago_pkey")
+  ID_Paquete  Int
+  ID_USUARIO  String    @db.Uuid
+  Monto       Decimal?  @db.Decimal(12, 2)
+  Moneda      String?   @db.VarChar(20)
+  Fecha_Pago  DateTime? @db.Timestamptz(6)
+  Estado_Pago String?   @db.VarChar(30)
+  Metodo_Pago String?   @db.VarChar(30)
+  Paquete     Paquete   @relation(fields: [ID_Paquete], references: [ID_Paquete], onDelete: NoAction, onUpdate: NoAction, map: "ID_Paquete")
+  USUARIO     USUARIO   @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
+}
+
+model Paquete {
+  ID_Paquete                                        Int                        @id
+  ID_USUARIO                                        String                     @db.Uuid
+  ID_Direccion_Origen                               Int
+  ID_Direccion_Destino                              Int
+  ID_Estado                                         Int
+  n_Receptor                                        String                     @db.VarChar(60)
+  Codigo_gps                                        String?                    @db.VarChar(60)
+  Peso                                              Decimal?                   @db.Decimal(10, 2)
+  Largo                                             Decimal?                   @db.Decimal(10, 2)
+  Ancho                                             Decimal?                   @db.Decimal(10, 2)
+  Alto                                              Decimal?                   @db.Decimal(10, 2)
+  Creado_en                                         DateTime?                  @db.Timestamptz(6)
+  Historial_Estado_Paquete                          Historial_Estado_Paquete[]
+  Pagos                                             Pagos[]
+  Direccion_Paquete_ID_Direccion_DestinoToDireccion Direccion                  @relation("Paquete_ID_Direccion_DestinoToDireccion", fields: [ID_Direccion_Destino], references: [ID_Direccion], onDelete: NoAction, onUpdate: NoAction, map: "ID_Direccion_Destino")
+  Direccion_Paquete_ID_Direccion_OrigenToDireccion  Direccion                  @relation("Paquete_ID_Direccion_OrigenToDireccion", fields: [ID_Direccion_Origen], references: [ID_Direccion], onDelete: NoAction, onUpdate: NoAction, map: "ID_Direccion_Origen")
+  Estados                                           Estados                    @relation(fields: [ID_Estado], references: [ID_Estado], onDelete: NoAction, onUpdate: NoAction, map: "ID_Estado")
+  USUARIO                                           USUARIO                    @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
+  Paquete_m                                         Paquete_m[]
+  Seguimiento_GPS                                   Seguimiento_GPS[]
+}
+
+model Paquete_m {
+  ID_Paquete       Int
+  ID_Mensajero     String    @db.Uuid
+  Fecha_Asignacion DateTime? @db.Timestamptz(6)
+  Mensajero        Mensajero @relation(fields: [ID_Mensajero], references: [ID_Mensajero], onDelete: NoAction, onUpdate: NoAction, map: "ID_Mensajero")
+  Paquete          Paquete   @relation(fields: [ID_Paquete], references: [ID_Paquete], onDelete: NoAction, onUpdate: NoAction, map: "ID_Paquete")
+
+  @@id([ID_Paquete, ID_Mensajero])
+}
+
+model Rol {
+  ID_Rol   Int       @id(map: "rol_pkey")
+  nomb_rol String?   @db.VarChar(30)
+  USUARIO  USUARIO[]
+}
+
+model Seguimiento_GPS {
+  ID_Seguimiento BigInt    @id(map: "Seguimiento_pkey")
+  ID_Paquete     Int
+  Latitud        Decimal?  @db.Decimal(10, 8)
+  Longitud       Decimal?  @db.Decimal(11, 8)
+  Registro_GPS   DateTime? @db.Timestamptz(6)
+  Paquete        Paquete   @relation(fields: [ID_Paquete], references: [ID_Paquete], onDelete: NoAction, onUpdate: NoAction, map: "ID_Paquete")
+}
+
+model USUARIO {
+  ID_USUARIO String      @id(map: "user_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  Pnom       String      @db.VarChar(30)
+  Snom       String      @db.VarChar(30)
+  Papellido  String      @db.VarChar(30)
+  Sapellido  String      @db.VarChar(30)
+  Email      String      @db.VarChar(60)
+  contrase_a String      @map("contraseña") @db.VarChar(50)
+  Telefono_  String      @map("Telefono ") @db.Char
+  Creado_en  DateTime?   @default(now()) @db.Timestamptz(6)
+  ID_Rol     Int
+  Direccion  Direccion[]
+  Pagos      Pagos[]
+  Paquete    Paquete[]
+  Rol        Rol         @relation(fields: [ID_Rol], references: [ID_Rol], onDelete: NoAction, onUpdate: NoAction, map: "ID_Rol")
+}
