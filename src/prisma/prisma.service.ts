@@ -17,7 +17,7 @@ export class PrismaService
       await this.$connect();
       this.logger.log('Connected to the database');
     } catch (error) {
-      this.logger.error('Error connecting to the database', error);
+      this.logger.error('Error conectandose a la base de datos', error);
     }
   }
 
@@ -25,7 +25,7 @@ export class PrismaService
     try {
       await this.$disconnect();
     } catch (error) {
-      console.error('Error disconnecting from the database', error);
+      this.logger.error('Error desconectandose de la base de datos', error);
     }
   }
 }
