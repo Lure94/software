@@ -17,7 +17,7 @@ model Direccion {
   Codigo_Postal                                   String?   @db.VarChar(20)
   Pais                                            String?   @db.VarChar(60)
   Creado_en                                       DateTime? @db.Timestamptz(6)
-  USUARIO                                         USUARIO   @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
+  USUARIO                                         Usuario   @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
   Paquete_Paquete_ID_Direccion_DestinoToDireccion Paquete[] @relation("Paquete_ID_Direccion_DestinoToDireccion")
   Paquete_Paquete_ID_Direccion_OrigenToDireccion  Paquete[] @relation("Paquete_ID_Direccion_OrigenToDireccion")
 }
@@ -62,7 +62,7 @@ model Pagos {
   Estado_Pago String?   @db.VarChar(30)
   Metodo_Pago String?   @db.VarChar(30)
   Paquete     Paquete   @relation(fields: [ID_Paquete], references: [ID_Paquete], onDelete: NoAction, onUpdate: NoAction, map: "ID_Paquete")
-  USUARIO     USUARIO   @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
+  USUARIO     Usuario   @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
 }
 
 model Paquete {
@@ -83,7 +83,7 @@ model Paquete {
   Direccion_Paquete_ID_Direccion_DestinoToDireccion Direccion                  @relation("Paquete_ID_Direccion_DestinoToDireccion", fields: [ID_Direccion_Destino], references: [ID_Direccion], onDelete: NoAction, onUpdate: NoAction, map: "ID_Direccion_Destino")
   Direccion_Paquete_ID_Direccion_OrigenToDireccion  Direccion                  @relation("Paquete_ID_Direccion_OrigenToDireccion", fields: [ID_Direccion_Origen], references: [ID_Direccion], onDelete: NoAction, onUpdate: NoAction, map: "ID_Direccion_Origen")
   Estados                                           Estados                    @relation(fields: [ID_Estado], references: [ID_Estado], onDelete: NoAction, onUpdate: NoAction, map: "ID_Estado")
-  USUARIO                                           USUARIO                    @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
+  USUARIO                                           Usuario                    @relation(fields: [ID_USUARIO], references: [ID_USUARIO], onDelete: NoAction, onUpdate: NoAction, map: "ID_USUARIO")
   Paquete_m                                         Paquete_m[]
   Seguimiento_GPS                                   Seguimiento_GPS[]
 }
@@ -101,7 +101,7 @@ model Paquete_m {
 model Rol {
   ID_Rol   Int       @id(map: "rol_pkey") @default(autoincrement())
   nomb_rol String?   @db.VarChar(30)
-  USUARIO  USUARIO[]
+  Usuario  Usuario[]
 }
 
 model Seguimiento_GPS {
@@ -113,17 +113,17 @@ model Seguimiento_GPS {
   Paquete        Paquete   @relation(fields: [ID_Paquete], references: [ID_Paquete], onDelete: NoAction, onUpdate: NoAction, map: "ID_Paquete")
 }
 
-model USUARIO {
+model Usuario {
   ID_USUARIO String      @id(map: "user_pkey") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   Pnom       String      @db.VarChar(30)
   Snom       String      @db.VarChar(30)
   Papellido  String      @db.VarChar(30)
   Sapellido  String      @db.VarChar(30)
-  contrase_a String      @map("contraseña") @db.VarChar(200)
-  Telefono_  String      @map("Telefono ") @db.Char
+  Password   String      @db.VarChar(200)
+  Telefono   String      @db.VarChar(8)
   Creado_en  DateTime?   @default(now()) @db.Timestamptz(6)
   ID_Rol     Int
-  Email      String      @unique @db.VarChar(60)
+  Email      String      @unique(map: "USUARIO_Email_key") @db.VarChar(60)
   Direccion  Direccion[]
   Pagos      Pagos[]
   Paquete    Paquete[]

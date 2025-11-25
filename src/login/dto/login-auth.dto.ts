@@ -6,5 +6,5 @@ export class LoginAuthDto {
 
   @IsNotEmpty()
   @MinLength(6)
-  contrase_a!: string;
+  Password!: string;
 }

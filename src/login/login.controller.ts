@@ -2,7 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { LoginService } from './login.service.js';
 import { RegisterAuthDto } from './dto/register-auth.dto.js';
 import { LoginAuthDto } from './dto/login-auth.dto.js';
-@Controller('login')
+@Controller('user')
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 

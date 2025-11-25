@@ -14,28 +14,28 @@ export class LoginService {
   ) {}
 
   async registerUser(registerAuthDto: RegisterAuthDto) {
-    const { Pnom, Snom, Papellido, Sapellido, Email, contrase_a, Telefono_ } =
+    const { Pnom, Snom, Papellido, Sapellido, Email, Password, Telefono } =
       registerAuthDto;
 
-    const hashedPassword = await hash(contrase_a, {
+    const hashedPassword = await hash(Password, {
       type: argon2id,
     });
 
     try {
-      const user = await this.prisma.uSUARIO.create({
+      const user = await this.prisma.usuario.create({
         data: {
           Pnom,
           Snom,
           Papellido,
           Sapellido,
           Email,
-          contrase_a: hashedPassword,
-          Telefono_,
+          Password: hashedPassword,
+          Telefono,
           Rol: { connect: { ID_Rol: 1 } },
         },
       });
       return user;
-    } catch (error) {
+    } catch (error: unknown) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
@@ -45,6 +45,7 @@ export class LoginService {
           HttpStatus.CONFLICT,
         );
       }
+      console.error(error);
       throw new HttpException(
         'Error al registrar usuario',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -53,9 +54,9 @@ export class LoginService {
   }
 
   async loginUser(loginAuthDto: LoginAuthDto) {
-    const { Email, contrase_a } = loginAuthDto;
+    const { Email, Password } = loginAuthDto;
 
-    const user = await this.prisma.uSUARIO.findUnique({
+    const user = await this.prisma.usuario.findUnique({
       where: { Email },
     });
 
@@ -66,7 +67,7 @@ export class LoginService {
       );
     }
 
-    const isPasswordValid = await verify(user.contrase_a, contrase_a);
+    const isPasswordValid = await verify(user.Password, Password);
 
     if (!isPasswordValid) {
       throw new HttpException(
