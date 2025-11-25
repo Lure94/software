@@ -9,7 +9,7 @@ datasource db {
 }
 
 model Direccion {
-  ID_Direccion                                    Int       @id
+  ID_Direccion                                    Int       @id @default(autoincrement())
   ID_USUARIO                                      String    @db.Uuid
   Calle_                                          String?   @map("Calle ") @db.VarChar(40)
   Ciudad                                          String?   @db.VarChar(40)
@@ -23,7 +23,7 @@ model Direccion {
 }
 
 model Estados {
-  ID_Estado                Int                        @id(map: "estado_pkey")
+  ID_Estado                Int                        @id(map: "estado_pkey") @default(autoincrement())
   n_Estado                 String?                    @db.VarChar(60)
   Descripcion              String?
   Historial_Estado_Paquete Historial_Estado_Paquete[]
@@ -31,7 +31,7 @@ model Estados {
 }
 
 model Historial_Estado_Paquete {
-  ID_Historial Int       @id(map: "Historial_pkey")
+  ID_Historial Int       @id(map: "Historial_pkey") @default(autoincrement())
   ID_Paquete   Int
   ID_Estado    Int
   Ubicacion    String?   @db.VarChar(50)
@@ -53,7 +53,7 @@ model Mensajero {
 }
 
 model Pagos {
-  ID_Pago     Int       @id(map: "Pago_pkey")
+  ID_Pago     Int       @id(map: "Pago_pkey") @default(autoincrement())
   ID_Paquete  Int
   ID_USUARIO  String    @db.Uuid
   Monto       Decimal?  @db.Decimal(12, 2)
@@ -66,7 +66,7 @@ model Pagos {
 }
 
 model Paquete {
-  ID_Paquete                                        Int                        @id
+  ID_Paquete                                        Int                        @id @default(autoincrement())
   ID_USUARIO                                        String                     @db.Uuid
   ID_Direccion_Origen                               Int
   ID_Direccion_Destino                              Int
@@ -99,13 +99,13 @@ model Paquete_m {
 }
 
 model Rol {
-  ID_Rol   Int       @id(map: "rol_pkey")
+  ID_Rol   Int       @id(map: "rol_pkey") @default(autoincrement())
   nomb_rol String?   @db.VarChar(30)
   USUARIO  USUARIO[]
 }
 
 model Seguimiento_GPS {
-  ID_Seguimiento BigInt    @id(map: "Seguimiento_pkey")
+  ID_Seguimiento BigInt    @id(map: "Seguimiento_pkey") @default(autoincrement())
   ID_Paquete     Int
   Latitud        Decimal?  @db.Decimal(10, 8)
   Longitud       Decimal?  @db.Decimal(11, 8)
@@ -119,11 +119,11 @@ model USUARIO {
   Snom       String      @db.VarChar(30)
   Papellido  String      @db.VarChar(30)
   Sapellido  String      @db.VarChar(30)
-  Email      String      @db.VarChar(60)
-  contrase_a String      @map("contraseña") @db.VarChar(50)
+  contrase_a String      @map("contraseña") @db.VarChar(200)
   Telefono_  String      @map("Telefono ") @db.Char
   Creado_en  DateTime?   @default(now()) @db.Timestamptz(6)
   ID_Rol     Int
+  Email      String      @unique @db.VarChar(60)
   Direccion  Direccion[]
   Pagos      Pagos[]
   Paquete    Paquete[]
