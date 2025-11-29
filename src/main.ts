@@ -8,8 +8,6 @@ async function bootstrap() {
 
   app.enableCors();
 
-  app.setGlobalPrefix('api');
-
   const config = new DocumentBuilder()
     .setTitle('NikaFlex')
     .setDescription('API para el proyecto de la abuela de Ari')
