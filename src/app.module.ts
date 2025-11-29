@@ -7,6 +7,7 @@ import { LoginModule } from './login/login.module.js';
 import { ManagerModule } from './manager/manager.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { ConfigModule } from '@nestjs/config';
+import { CourierModule } from './courier/courier.module.js';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
     LoginModule,
     ManagerModule,
     AdminModule,
+    CourierModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
