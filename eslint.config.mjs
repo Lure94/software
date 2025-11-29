@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   {
     ignores: ['eslint.config.mjs',
-      './src/generated/prisma/models/*'
+      './src/generated/*'
     ],
   },
   eslint.configs.recommended,
@@ -31,6 +31,13 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        }
+      ],
       "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },

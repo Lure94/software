@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../src/generated"
 }
 
 datasource db {
@@ -100,7 +100,7 @@ model Paquete_m {
 
 model Rol {
   ID_Rol   Int       @id(map: "rol_pkey") @default(autoincrement())
-  nomb_rol String?   @db.VarChar(30)
+  nomb_rol String?   @unique(map: "unique_name") @db.VarChar(30)
   Usuario  Usuario[]
 }
 

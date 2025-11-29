@@ -7,7 +7,7 @@ import {
   Length,
 } from 'class-validator';
 
-export class RegisterAuthDto {
+export class RegisterUserManagerDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(30)
@@ -40,4 +40,8 @@ export class RegisterAuthDto {
   @IsString()
   @Length(8, 8, { message: 'El teléfono debe tener exactamente 8 caracteres' })
   Telefono!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  Rol!: string;
 }

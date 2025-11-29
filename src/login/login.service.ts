@@ -4,7 +4,7 @@ import { hash, argon2id, verify } from 'argon2';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { RegisterAuthDto } from '../login/dto/register-auth.dto.js';
 import { LoginAuthDto } from '../login/dto/login-auth.dto.js';
-import { Prisma } from '../generated/prisma/client.js';
+import { handleDBErrors } from '../utils/handleDBErrors.js';
 
 @Injectable()
 export class LoginService {
@@ -33,23 +33,12 @@ export class LoginService {
           Telefono,
           Rol: { connect: { ID_Rol: 1 } },
         },
+        include: { Rol: true },
       });
-      return user;
-    } catch (error: unknown) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new HttpException(
-          'El correo ya está registrado',
-          HttpStatus.CONFLICT,
-        );
-      }
-      console.error(error);
-      throw new HttpException(
-        'Error al registrar usuario',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      const { Password: _, ID_Rol: __, Rol: ___, ...result } = user;
+      return { result, rol: user.Rol.nomb_rol };
+    } catch (error: any) {
+      handleDBErrors(error);
     }
   }
 
@@ -58,6 +47,7 @@ export class LoginService {
 
     const user = await this.prisma.usuario.findUnique({
       where: { Email },
+      include: { Rol: true },
     });
 
     if (!user) {
@@ -78,7 +68,7 @@ export class LoginService {
 
     const payload = { Email: user.Email, sub: user.ID_USUARIO };
     return {
-      user: { nombre: user.Pnom, email: user.Email, rol: user.ID_Rol },
+      user: { nombre: user.Pnom, email: user.Email, rol: user.Rol.nomb_rol },
       token: this.jwtService.sign(payload),
     };
   }
