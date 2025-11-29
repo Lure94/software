@@ -6,6 +6,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.enableCors();
+
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('NikaFlex')
     .setDescription('API para el proyecto de la abuela de Ari')
