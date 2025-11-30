@@ -8,6 +8,7 @@ import { ManagerModule } from './manager/manager.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { ConfigModule } from '@nestjs/config';
 import { CourierModule } from './courier/courier.module.js';
+import { UserModule } from './user/user.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CourierModule } from './courier/courier.module.js';
     ManagerModule,
     AdminModule,
     CourierModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
