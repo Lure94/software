@@ -9,12 +9,20 @@ import { AdminModule } from './admin/admin.module.js';
 import { ConfigModule } from '@nestjs/config';
 import { CourierModule } from './courier/courier.module.js';
 import { UserModule } from './user/user.module.js';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'global',
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
     PrismaModule,
     LoginModule,
     ManagerModule,
