@@ -21,8 +21,9 @@ export default tseslint.config(
       },
       sourceType: 'module',
       parserOptions: {
-        projectService: true,
+        project: ['tsconfig.json', 'tsconfig.spec.json'],
         tsconfigRootDir: import.meta.dirname,
+        sourceType: 'module',
       },
     },
   },

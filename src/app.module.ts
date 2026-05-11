@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CourierModule } from './courier/courier.module.js';
 import { UserModule } from './user/user.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { HashService } from './hash/hash.service.js';
 
 @Module({
   imports: [
@@ -31,6 +32,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService, PrismaService, HashService],
 })
 export class AppModule {}

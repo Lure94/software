@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { SetMetadata } from '@nestjs/common';
 
 export enum AppRole {
